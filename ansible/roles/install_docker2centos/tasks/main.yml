@@ -1,0 +1,95 @@
+---
+# tasks file for install_docker2centos
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+        update_only: yes
+      become: yes
+
+    - name: Ensure a list of yum packages are installed
+      yum:
+        name: "{{ packages }}"
+        state: latest
+        update_cache: yes
+      vars:
+        packages:
+        - python-pip
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+        - amazon-linux-extras
+      become: yes
+
+    - name: Add extras repository
+      shell: yum-config-manager --enable extras
+      become: yes
+
+    - name: Install docker-ce (centos) via amazon-linux-extras packages
+      shell: "amazon-linux-extras install docker=18.06.1 -y"
+      become: yes
+
+    - name: Enable Docker CE service at startup
+      service:
+        name: docker
+        state: started
+        enabled: yes
+      become: yes
+
+    - name: Ensure Python pip packages are installed
+      pip:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - boto
+        - boto3
+        - docker-compose
+    
+    # optional you may to add your user to docker group 
+    - name: Create "docker" group
+      group:
+        name: "docker"
+        state: present
+      become: yes
+
+    # sudo usermod -aG docker root
+    - name: Add remote "user_name" user to "docker" group
+      user:
+        name: "ec2-user"
+        group: "docker"
+        append: yes
+      become: yes
+
+    - name: pull jenkins images
+      shell: "docker pull jenkins/jenkins"
+      become: yes
+
+    - name: build jenkins docker
+      shell: "docker run -d -p 8080:8080 --name=jenkins-master jenkins/jenkins"
+      become: yes
+    
+    - name: Pause for generate logs
+      pause:
+        seconds: 10 
+    
+    - name: write jenkins docker logs
+      shell: "docker logs jenkins-master &> jenkins.logs.txt"
+      register: jenkis_logs
+      become: yes
+
+    - debug:
+        var: ansible_all_ipv4_addresses
+
+    - name: Show host's ip
+      debug:
+        msg: "{{ ansible_ssh_host }}"
+    
+    - name: cat jenkins logs
+      shell: "cat jenkins.logs.txt"
+      register: jenkins_logs_output
+      become: yes
+    
+    - name: print to console jenkis log
+      debug: 
+        msg: "{{jenkins_logs_output.stdout}}"
+    

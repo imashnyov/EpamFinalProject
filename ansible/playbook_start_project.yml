@@ -1,0 +1,7 @@
+---
+- name: Final_Project
+  hosts: jenkins_server
+
+  roles:
+    - role: install_docker2centos
+ 
