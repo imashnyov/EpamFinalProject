@@ -1,5 +1,5 @@
-# EPAM Final Project
-Mashnov Illia
+# Mashnov Illia
+EPAM Final Project
 
 # Part 1 - IaS:
  Add amazon user credentials to environment variables
