@@ -1,1 +1,1 @@
-Ubuntu: 3.128.95.111 Amazon_linux: 18.218.176.109
+Ubuntu: 13.59.47.221 Amazon_linux: 3.22.208.36
