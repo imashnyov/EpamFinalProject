@@ -1,7 +1,7 @@
 provider "aws" {
   region = "us-east-2"
 }
-/*
+
 #-------------------------EC2--------------------------
 # latest instances
 data "aws_ami" "latest_ubuntu" {
@@ -13,7 +13,7 @@ data "aws_ami" "latest_ubuntu" {
     values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
   }
 }
-
+/*
 data "aws_ami" "latest_amazon_linux" {
   owners      = ["amazon"]
   most_recent = true
@@ -23,6 +23,7 @@ data "aws_ami" "latest_amazon_linux" {
     values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
 }
+*/
 # create instances
 resource "aws_instance" "project" {
   ami                    = data.aws_ami.latest_ubuntu.id
@@ -34,7 +35,7 @@ resource "aws_instance" "project" {
     Name = "FinalProject"
   }
 }
-
+/*
 resource "aws_instance" "jenkins" {
 #  ami                    = data.aws_ami.latest_ubuntu.id
   ami                    = data.aws_ami.latest_amazon_linux.id
@@ -46,6 +47,7 @@ resource "aws_instance" "jenkins" {
     Name = "Jenkins"
   }
 }
+*/
 # create policy
 resource "aws_security_group" "project_security" {
   name = "web-server-security"
@@ -64,6 +66,13 @@ resource "aws_security_group" "project_security" {
     cidr_blocks      = ["0.0.0.0/0"]
   }
 
+    ingress {
+    from_port        = 5432
+    to_port          = 5432
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port        = 0
     to_port          = 0
@@ -76,7 +85,7 @@ resource "aws_security_group" "project_security" {
     Name = "ssh_web"
   }
 }
-
+/*
 resource "aws_security_group" "jenkins_security" {
   name = "jenkins-server-security"
 
@@ -219,12 +228,24 @@ resource "aws_db_instance" "beer_database" {
   engine               = "postgres"
   engine_version       = "12.5"
   instance_class       = "db.t2.micro"
-  name                 = "beerdb1"
+  identifier           = "beerdb"
+  name                 = "beerdb"
   username             = "imashnyov"
   password             = "beeradmin"
   skip_final_snapshot  = true
+  port                 = 5432
+  publicly_accessible  = true
 #  parameter_group_name = "rds_sg"
 }
+/*
+resource "aws_db_security_group" "default" {
+  name = "rds_sg"
+
+  ingress {
+    cidr = "10.0.0.0/24"
+  }
+}
+*/
 /*
 resource "aws_db_security_group" "rds_sg" {
   name = "rds_sg"
