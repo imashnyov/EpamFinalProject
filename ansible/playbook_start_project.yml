@@ -1,7 +1,7 @@
 ---
 - name: Final_Project
-  hosts: jenkins_server
+  hosts: project_servers
 
   roles:
-    - role: install_docker2centos
- 
+    #- role: install_docker2centos
+    - role: install_docker2ubuntu
