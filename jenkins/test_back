@@ -54,10 +54,6 @@ pipeline {
             }
         }
     }
-     stage(Deploy)
-        {
-     sshPublisher(publishers: [sshPublisherDesc(configName: 'TEST', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'docker pull imashnov/beersite_back', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-        }
     }
 
     /* Cleanup workspace */
