@@ -52,5 +52,8 @@ WantedBy=multi-user.target
 sudo systemctl daemon-reload
 sudo systemctl enable my_script
 ```
-
+```
+docker exec -it --user root jenkins-master /bin/bash
+chmod 777 /var/run/docker.sock
+```
 

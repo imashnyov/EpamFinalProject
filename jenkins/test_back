@@ -1,0 +1,65 @@
+#!groovy
+properties([pipelineTriggers([githubPush()])])
+
+pipeline {
+    /* specify nodes for executing */
+    agent any
+    
+    environment {
+        SECRET_KEY='secret'
+        USE_S3='False'
+        DATABASE_URL='sqlite:////tmp/my-tmp-sqlite.db'
+        dockerImage=''
+        registry='imashnov/beersite_back'
+        registryCredential='dockerhub'
+    }
+    
+   stages {
+        /* checkout repo */
+        stage('Checkout SCM') {
+            steps {
+                checkout([
+                 $class: 'GitSCM',
+                 branches: [[name: 'master']],
+                 userRemoteConfigs: [[
+                    url: 'https://github.com/yarik2215/beer-site-backend.git',
+                    credentialsId: '',
+                 ]]
+                ])
+            }
+        }
+         stage('Testing') {
+            steps {
+                sh 'ls -la'
+                /*sh 'pip3 install pipenv'*/
+                /*sh 'pipenv install'*/
+                sh 'pipenv install --ignore-pipfile'
+                sh 'pipenv run python3 manage.py test'
+            }
+        }
+        stage('Building image') {
+            steps{
+              sh 'whoami'
+              script {
+                dockerImage = docker.build registry
+              }
+         }
+    }
+        stage('Push Image') {
+            steps{    
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                    dockerImage.push()
+                }
+            }
+        }
+    }
+    }
+
+    /* Cleanup workspace */
+    post {
+       always {
+           deleteDir()
+       }
+   }
+}

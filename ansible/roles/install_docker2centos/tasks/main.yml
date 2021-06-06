@@ -65,7 +65,8 @@
       become: yes
 
     - name: build jenkins docker
-      shell: "docker run -d -p 8080:8080 -p 50000:50000 -p 8096:8096 -v /home/ec2-user:/var/jenkins_home --name=jenkins-master imashnov/jenkins"
+      shell: "docker run -d -p 8080:8080 -p 50000:50000 -p 8096:8096 -v /var/run/docker.sock:/var/run/docker.sock -v /home/ec2-user:/var/jenkins_home --name=jenkins-master imashnov/jenkins3"
+      #docker run -d -p 8080:8080 -p 50000:50000 -p 8096:8096 -v /home/ec2-user:/var/jenkins_home --name=jenkins-master imashnov/jenkins
       become: yes
 
     - name: Pause for generate logs
