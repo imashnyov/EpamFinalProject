@@ -63,3 +63,19 @@ pipeline {
        }
    }
 }
+
+def remote = [:]
+remote.name = "ubuntu"
+remote.host = "18.218.100.129"
+remote.allowAnyHosts = true
+
+node {
+		stage("Pull image to ProjectServer") {
+			  withCredentials([sshUserPrivateKey(credentialsId: 'deploy_server', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'ubuntu')]) {
+				  remote.user = ubuntu
+				  remote.identityFile = identity
+			
+				  sshCommand remote: remote, command: 'docker pull imashnov/beersite_back', failOnError:'false'
+		}
+	}
+}
