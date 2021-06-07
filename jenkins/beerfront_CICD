@@ -1,0 +1,57 @@
+#!groovy
+properties([pipelineTriggers([githubPush()])])
+
+pipeline {
+    /* specify nodes for executing */
+    agent any
+    
+   stages {
+        /* checkout repo */
+        stage('Checkout SCM') {
+            steps {
+                checkout([
+                 $class: 'GitSCM',
+                 branches: [[name: 'master']],
+                 userRemoteConfigs: [[
+                    url: 'https://github.com/yarik2215/beer-site-front.git',
+                    credentialsId: '',
+                 ]]
+                ])
+            }
+        }
+       stage('Testing') {
+            steps {
+                /*sh 'npm run test:unit'
+                sh 'npm run build'*/
+                sh 'pwd'
+                sh 'ls'
+                sh 'tar cf frontarchive.tar *'
+            }
+        }
+    
+    }
+/* Cleanup workspace */
+/*    post {
+       always {
+           deleteDir()
+       }
+   }
+*/
+}
+
+def remote = [:]
+remote.name = "ubuntu"
+remote.host = "18.218.100.129"
+remote.allowAnyHosts = true
+
+node {
+		stage("Pull front") {
+			  withCredentials([sshUserPrivateKey(credentialsId: 'deploy_server', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'ubuntu')]) {
+				  remote.user = ubuntu
+				  remote.identityFile = identity
+			
+				  sshPut remote: remote, from: '/var/jenkins_home/workspace/Front_CICD_pipeline/frontarchive.tar', into: '/home/ubuntu/dist'
+				  sshCommand remote: remote, command: 'tar -C /home/ubuntu/dist -xvf /home/ubuntu/dist/frontarchive.tar'
+		}
+	}
+}
