@@ -66,7 +66,7 @@ pipeline {
 
 def remote = [:]
 remote.name = "ubuntu"
-remote.host = "18.118.24.75"
+remote.host = "18.188.161.170"
 remote.allowAnyHosts = true
 
 node {
