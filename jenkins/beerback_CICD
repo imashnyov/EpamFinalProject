@@ -66,7 +66,7 @@ pipeline {
 
 def remote = [:]
 remote.name = "ubuntu"
-remote.host = "18.118.24.75"
+remote.host = "18.188.161.170"
 remote.allowAnyHosts = true
 
 node {
@@ -76,6 +76,15 @@ node {
 				  remote.identityFile = identity
 			
 				  sshCommand remote: remote, command: 'docker pull imashnov/beersite_back', failOnError:'false'
+		}
+	}
+			stage("Deploy image to ProjectServer") {
+			  withCredentials([sshUserPrivateKey(credentialsId: 'deploy_server', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'ubuntu')]) {
+				  remote.user = ubuntu
+				  remote.identityFile = identity
+			
+				  sshCommand remote: remote, command: 'pwd', failOnError:'false'
+				  sshCommand remote: remote, command: '/home/ubuntu/.local/bin/docker-compose -f docker-compose.aws.yml up -d --build', failOnError:'false'
 		}
 	}
 }
