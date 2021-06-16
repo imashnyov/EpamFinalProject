@@ -1,7 +1,7 @@
 # Mashnov Illia
 EPAM Final Project
 <center>
-<p><a href="/Final_project_Mashnov.pptx" target="_blank"><img width="200" height="200" src='pptx.png'></a></p>
+<p><a href="Final_project_Mashnov.pptx" target="_blank"><img width="200" height="200" src='pptx.png'></a></p>
 </center>
 
 # Part 1 - IaS:
