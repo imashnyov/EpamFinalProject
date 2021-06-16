@@ -1,5 +1,8 @@
 # Mashnov Illia
 EPAM Final Project
+<center>
+<p><a href="Final_poject_Mashnov.pptx" target="_blank"><img width="200" height="200" src='pptx.png'></a></p>
+</center>
 
 # Part 1 - IaS:
  ### Add amazon user credentials to environment variables
@@ -56,4 +59,5 @@ sudo systemctl enable my_script
 docker exec -it --user root jenkins-master /bin/bash
 chmod 777 /var/run/docker.sock
 ```
+
 
